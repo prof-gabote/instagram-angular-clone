@@ -1,1 +1,16 @@
-<p>auth works!</p>
+<section class="container mt-5">
+   <div class="row">
+      <div class="col-md-6 d-none d-md-flex justify-content-center">
+         <app-phone-frame></app-phone-frame>
+      </div>
+      <div class="col-md-6 px-5" [@fadeAnimation]="isLoginRoute">
+         <ng-container *ngIf="isLoginRoute; else registerTemplate">
+            <app-login></app-login>
+         </ng-container>
+         <ng-template #registerTemplate>
+            <app-register></app-register>
+         </ng-template>
+      </div>
+   </div>
+</section>
+<app-footer></app-footer>

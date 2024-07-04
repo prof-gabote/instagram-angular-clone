@@ -1,0 +1,14 @@
+/* auth-page.component.css */
+.auth-container {
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.auth-form {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

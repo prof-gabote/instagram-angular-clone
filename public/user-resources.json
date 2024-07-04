@@ -1,0 +1,19 @@
+[
+  {
+    "id": "1",
+    "username": "Pepe.Frog",
+    "password": "AAssdd123!",
+    "email": "pepe@frog.com",
+    "name": "Pepe the Frog",
+    "birthdate": "1990-01-01",
+    "token": "dqwMSterYMmql13V",
+    "profile-info": {
+      "title": "Internet Meme Legend",
+      "description": "🌿 Pepe the Frog 🐸 📸 Meme legend 🌐 Spreading smiles one meme at a time 💚 Living the frog life 🎨 Artwork & laughs #PepeTheFrog #MemeLife #FrogLife #ArtAndLaughs",
+      "profile-pic-url": "/img/feed/profile_feed.png",
+      "posts": "1,234",
+      "followers": "5,678",
+      "following": "9,101"
+    }
+  }
+]

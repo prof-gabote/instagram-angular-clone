@@ -1,0 +1,70 @@
+<div class="container">
+  <h2 class="text-center mb-4">Edit Profile</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" formControlName="email" required>
+      <div
+        *ngIf="profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched)"
+        class="text-danger">
+        Please enter a valid email address.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" class="form-control" id="username" formControlName="username" required>
+      <div
+        *ngIf="profileForm.get('username')?.invalid && (profileForm.get('username')?.dirty || profileForm.get('username')?.touched)"
+        class="text-danger">
+        Please enter a valid username.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="name" formControlName="name" required>
+      <div
+        *ngIf="profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)"
+        class="text-danger">
+        Full name is required.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="birthdate" class="form-label">Birthdate</label>
+      <input type="date" class="form-control" id="birthdate" formControlName="birthdate" required>
+      <div
+        *ngIf="profileForm.get('birthdate')?.invalid && (profileForm.get('birthdate')?.dirty || profileForm.get('birthdate')?.touched)"
+        class="text-danger">
+        Please enter a valid birthdate.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">New Password (leave blank to keep current password)</label>
+      <input type="password" class="form-control" id="password" formControlName="password">
+    </div>
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" formControlName="title">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" formControlName="description" rows="3" maxlength="300"></textarea>
+      <div class="form-text">Maximum 300 characters</div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100" [disabled]="profileForm.invalid">Update Profile</button>
+  </form>
+</div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  <div id="liveToast" class="toast" [ngClass]="{'show': showToast}" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="toast-header {{toastClass}}">
+      <strong class="me-auto">{{toastType}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"
+        (click)="showToast = false"></button>
+    </div>
+    <div class="toast-body">
+      {{ toastMessage }}
+    </div>
+  </div>
+</div>

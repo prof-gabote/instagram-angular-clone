@@ -1,0 +1,21 @@
+.container {
+  max-width: 600px;
+  margin-top: 2rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.toast {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast:not(.show) {
+  opacity: 0;
+}

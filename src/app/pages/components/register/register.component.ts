@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UserDataService } from '../../../services/userdata.service';
+import { User } from '../../../models/user.model';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +16,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
-  users: any[] = [];
   submitted = false;
   showPassword = false;
   showRepeatPassword = false;
@@ -23,8 +25,11 @@ export class RegisterComponent implements OnInit {
   toastClasses: string[] = ['bg-danger-subtle', 'bg-success-subtle'];
   toastClass = '';
 
-
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private userDataService: UserDataService,
+    private router: Router
+  ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
@@ -33,11 +38,6 @@ export class RegisterComponent implements OnInit {
       username: ['', Validators.required],
       birthdate: ['', [Validators.required, this.ageValidator]]
     }, { validator: this.passwordMatchValidator });
-
-    if (typeof localStorage !== 'undefined') {
-      const savedUsers = localStorage.getItem('users');
-      this.users = savedUsers ? JSON.parse(savedUsers) : [];
-    }
   }
 
   ngOnInit(): void { }
@@ -65,32 +65,58 @@ export class RegisterComponent implements OnInit {
     return age >= 16 ? null : { underage: true };
   }
 
-  userSignIn(email: string, name: string, password: string, username: string, birthdate: string): boolean {
-    const existingUser = this.users.find(user => user.email === email || user.username === username);
-    if (existingUser) {
-      this.showErrorToast('User already exists. Please login.');
-      return false;
-    }
-
-    const newUser = { email, name, password, username, birthdate };
-    this.users.push(newUser);
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('users', JSON.stringify(this.users));
-    }
-    this.showSuccessToast('User registered successfully.');
-    return true;
-  }
-
   onSubmit(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
       const { email, name, password, username, birthdate } = this.registerForm.value;
-      const registroExitoso = this.userSignIn(email, name, password, username, birthdate);
-      if (registroExitoso) {
-        this.registerForm.reset();
-        this.submitted = false;
-      }
+      
+      this.userDataService.getUserData().pipe(
+        switchMap(users => {
+          const existingUser = users.find(user => user.email === email || user.username === username);
+          if (existingUser) {
+            this.showErrorToast('User already exists. Please login.');
+            return of(null);
+          }
+  
+          const newUser: User = {
+            id: (users.length + 1).toString(),
+            email,
+            name,
+            password,
+            username,
+            birthdate,
+            token: this.generateToken(),
+            'profile-info': {
+              title: `${name}'s Profile`,
+              description: `Welcome to ${name}'s profile!`,
+              'profile-pic-url': '/assets/default-profile-pic.png',
+              posts: '0',
+              followers: '0',
+              following: '0'
+            }
+          };
+  
+          users.push(newUser);
+          return this.userDataService.updateAllUserData(users);
+        })
+      ).subscribe(
+        result => {
+          if (result) {
+            this.showSuccessToast('User registered successfully.');
+            this.registerForm.reset();
+            this.submitted = false;
+            setTimeout(() => this.router.navigate(['/auth/login']), 3000);
+          }
+        },
+        error => {
+          this.showErrorToast('Error registering user: ' + error.message);
+        }
+      );
     }
+  }
+
+  generateToken(): string {
+    return Math.random().toString(36).substr(2, 16);
   }
 
   showSuccessToast(message: string) {

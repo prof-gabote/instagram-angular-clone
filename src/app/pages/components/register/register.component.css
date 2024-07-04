@@ -2,23 +2,9 @@
   width: 150px;
 }
 
-.password-field {
-  position: relative;
-}
-
-.password-field input[type="password"]::-ms-reveal,
-.password-field input[type="password"]::-ms-clear {
-  display: none;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: none;
-  cursor: pointer;
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: inline-block;
 }
 
 .separator {
@@ -52,9 +38,4 @@
 
 .invalid-feedback {
   display: block;
-}
-
-.toggle-password:hover {
-  background-color: transparent;
-  color: #6c757d;
 }
