@@ -1,0 +1,97 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="mb-5 text-center">
+        <img src="/img/instagram_logo.svg" alt="Instagram Logo" class="logo">
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group form-floating mb-3">
+          <input type="email" formControlName="email" class="form-control" id="email" placeholder="Email" required>
+          <label for="email">Email address</label>
+          <div *ngIf="submitted && registerForm.get('email')?.errors" class="invalid-feedback d-block">
+            Please, enter a valid email address.
+          </div>
+        </div>
+
+        <div class="form-group form-floating mb-3">
+          <input type="text" formControlName="name" class="form-control" id="name" placeholder="Full name" required>
+          <label for="name">Full name</label>
+          <div *ngIf="submitted && registerForm.get('name')?.errors" class="invalid-feedback d-block">
+            Please, enter your full name.
+          </div>
+        </div>
+
+        <div class="form-group form-floating mb-3 password-field">
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control"
+            id="password" placeholder="Password" required>
+          <label for="password">Password</label>
+          <button type="button" class="btn btn-outline-secondary toggle-password"
+            (click)="togglePasswordVisibility('password')">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+          <div *ngIf="submitted && registerForm.get('password')?.errors" class="invalid-feedback d-block">
+            Please, enter a password with at least 8 characters, including at least one letter, one uppercase letter,
+            one number and one special character.
+          </div>
+        </div>
+
+        <div class="form-group form-floating mb-3 password-field">
+          <input [type]="showRepeatPassword ? 'text' : 'password'" formControlName="repeatPassword" class="form-control"
+            id="repeatPassword" placeholder="Repeat password" required>
+          <label for="repeatPassword">Repeat password</label>
+          <button type="button" class="btn btn-outline-secondary toggle-password"
+            (click)="togglePasswordVisibility('repeatPassword')">
+            {{ showRepeatPassword ? 'Hide' : 'Show' }}
+          </button>
+          <div *ngIf="submitted && registerForm.get('repeatPassword')?.errors" class="invalid-feedback d-block">
+            Please, repeat the password correctly.
+          </div>
+        </div>
+
+        <div class="form-group form-floating mb-3">
+          <input type="text" formControlName="username" class="form-control" id="username" placeholder="Username"
+            required>
+          <label for="username">Username</label>
+          <div *ngIf="submitted && registerForm.get('username')?.errors" class="invalid-feedback d-block">
+            Please, enter a username.
+          </div>
+        </div>
+
+        <div class="form-group form-floating mb-3">
+          <input type="date" formControlName="birthdate" class="form-control" id="birthdate" placeholder="Birthdate"
+            required>
+          <label for="birthdate">Birthdate</label>
+          <div *ngIf="submitted && registerForm.get('birthdate')?.errors" class="invalid-feedback d-block">
+            You must be at least 16 years old to register.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Sign up</button>
+      </form>
+
+      <div class="separator my-4">
+        <span class="separator-text">O</span>
+      </div>
+
+      <button type="button" class="btn btn-secondary w-100">Sign-up with a Facebook account</button>
+
+      <p class="mt-4 text-center"> Have an account already? <a routerLink="/login">Log in</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  <div id="liveToast" class="toast" [ngClass]="{'show': showToast}" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="toast-header {{toastClass}}">
+      <strong class="me-auto">{{toastType}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"
+        (click)="showToast = false"></button>
+    </div>
+    <div class="toast-body ">
+      {{ toastMessage }}
+    </div>
+  </div>
+</div>

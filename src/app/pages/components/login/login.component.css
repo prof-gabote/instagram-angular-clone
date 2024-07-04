@@ -1,0 +1,60 @@
+.logo {
+  width: 150px;
+}
+
+.btn-outline-secondary {
+  --bs-btn-hover-color: #6c757d;
+  --bs-btn-active-color: #6c757d;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #aaa;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #aaa;
+}
+
+.separator:not(:empty)::before {
+  margin-right: 0.25em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 0.25em;
+}
+
+.separator-text {
+  font-size: 1em;
+  color: #555;
+  padding: 0 10px;
+  background-color: #fff;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input[type="password"]::-ms-reveal,
+.password-field input[type="password"]::-ms-clear {
+  display: none;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.toggle-password:active{
+  background-color: transparent;
+}
