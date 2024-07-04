@@ -1,0 +1,32 @@
+<div class="container-fluid ">
+  <ul class="nav nav-underline mb-3 justify-content-center tab-container">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'posts'" (click)="setActiveTab('posts')">Posts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'reels'" (click)="setActiveTab('reels')">Reels</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'tagged'" (click)="setActiveTab('tagged')">Tagged</a>
+    </li>
+  </ul>
+ 
+   <!-- Grid content -->
+   <div class="row">
+     <ng-container *ngIf="activeTab === 'posts'">
+       <div class="col-4 mb-1 px-1" *ngFor="let post of posts">
+         <img [src]="post.imageUrl" class="img-fluid" [alt]="'Post ' + post.id" aria-label="Post">
+       </div>
+     </ng-container>
+     <ng-container *ngIf="activeTab === 'reels'">
+       <div class="col-4 mb-1" *ngFor="let reel of reels">
+         <img [src]="reel.imageUrl" class="img-fluid" [alt]="'Reel ' + reel.id" aria-label="Reel">
+       </div>
+     </ng-container>
+     <ng-container *ngIf="activeTab === 'tagged'">
+       <div class="col-4 mb-1" *ngFor="let tag of tagged">
+         <img [src]="tag.imageUrl" class="img-fluid" [alt]="'Tagged ' + tag.id" aria-label="Tagged">
+       </div>
+     </ng-container>
+   </div>
+ </div>

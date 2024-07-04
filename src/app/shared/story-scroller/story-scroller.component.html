@@ -1,0 +1,10 @@
+<div class="container">
+   <div class="row flex-nowrap overflow-auto story-container">
+      <div class="col-3 col-md-2" *ngFor="let story of stories">
+         <div class="story-item">
+            <img [src]="story.imageUrl" [alt]="story.title" aria-label="Story">
+            <span>{{ story.title }}</span>
+         </div>
+      </div>
+   </div>
+</div>
