@@ -1,0 +1,10 @@
+/* IMPORTANTE */
+
+# Bibliotecas
+npm install -g @angular/cli angular
+npm i bootstrap@5.3.3
+npm install express mongoose bcrypt jsonwebtoken firebase multer
+npm install cors
+
+#DB
+mongodb+srv://carlvalverde:Dp82TP3WKKQANTyM@instaclone.lxylzcp.mongodb.net/

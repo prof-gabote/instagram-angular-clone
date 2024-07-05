@@ -9,6 +9,7 @@ const {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } = require("firebase/storage");
 const cors = require("cors");
 
@@ -163,7 +164,6 @@ app.put("/profile", authenticateToken, async (req, res) => {
   try {
     const { name, email, username, profileInfo } = req.body;
 
-    // Verificar si el nuevo username ya existe
     if (username) {
       const existingUser = await User.findOne({ username });
       if (existingUser && existingUser._id.toString() !== req.user.id) {
@@ -274,6 +274,39 @@ app.delete("/profile", authenticateToken, async (req, res) => {
     res.json({ message: "Usuario eliminado exitosamente" });
   } catch (error) {
     res.status(500).json({ error: "Error al eliminar usuario" });
+  }
+});
+
+// Eliminar foto de post
+app.delete("/delete-post-photo", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const photoUrl = req.body.photoUrl;
+    
+    const index = user.postPhotos.indexOf(photoUrl);
+    if (index > -1) {
+      // Eliminar la foto de Firebase Storage
+      const storage = getStorage(firebaseApp);
+      const photoRef = ref(storage, photoUrl);
+      
+      try {
+        await deleteObject(photoRef);
+        console.log('Foto eliminada de Firebase Storage');
+      } catch (firebaseError) {
+        console.error('Error al eliminar la foto de Firebase Storage:', firebaseError);
+      }
+
+      // Eliminar la referencia de la foto en la base de datos
+      user.postPhotos.splice(index, 1);
+      await user.save();
+      
+      res.json({ message: "Foto de post eliminada exitosamente" });
+    } else {
+      res.status(404).json({ error: "Foto no encontrada" });
+    }
+  } catch (error) {
+    console.error('Error al eliminar la foto del post:', error);
+    res.status(500).json({ error: "Error al eliminar la foto del post" });
   }
 });
 

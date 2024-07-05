@@ -12,5 +12,5 @@ export interface User {
    profilePicUrl: String,
    followers: String,
    following: String,
-   postPhotos: [String],
+   postPhotos: string[],
 };

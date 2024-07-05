@@ -67,4 +67,14 @@ export class UserService {
       { headers: this.getHeaders() }
     );
   }
+
+  deletePostPhoto(photoUrl: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.apiUrl}/delete-post-photo`,
+      { 
+        headers: this.getHeaders(),
+        body: { photoUrl }
+      }
+    );
+  }
 }
