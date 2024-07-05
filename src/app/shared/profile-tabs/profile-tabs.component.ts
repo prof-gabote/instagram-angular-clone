@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import {NgFor, NgIf} from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { UserService } from '../../services/userdata.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-profile-tabs',
@@ -8,29 +10,28 @@ import {NgFor, NgIf} from '@angular/common';
   templateUrl: './profile-tabs.component.html',
   styleUrls: ['./profile-tabs.component.css']
 })
-export class ProfileTabsComponent {
+export class ProfileTabsComponent implements OnInit {
   activeTab: string = 'posts';
+  user: User | null = null;
 
-  posts = [
-    { id: 1, imageUrl: '/img/feed/stories/story_1.png' },
-    { id: 2, imageUrl: '/img/feed/stories/story_2.png' },
-    { id: 3, imageUrl: '/img/feed/stories/story_3.png' },
-    { id: 1, imageUrl: '/img/feed/stories/story_4.png' },
-    { id: 2, imageUrl: '/img/feed/stories/story_5.png' },
-    { id: 1, imageUrl: '/img/feed/stories/story_6.png' },
-  ];
+  constructor(private userService: UserService) {}
 
-  reels = [
-    { id: 1, imageUrl: '/img/feed/stories/story_4.png' },
-    { id: 2, imageUrl: '/img/feed/stories/story_5.png' },
-  ];
+  ngOnInit() {
+    this.loadUserProfile();
+  }
 
-  tagged = [
-    { id: 1, imageUrl: '/img/feed/stories/story_6.png' },
-  ];
+  loadUserProfile() {
+    this.userService.getProfile().subscribe(
+      (user: User) => {
+        this.user = user;
+      },
+      (error) => {
+        console.error('Error fetching user profile:', error);
+      }
+    );
+  }
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
   }
-
 }

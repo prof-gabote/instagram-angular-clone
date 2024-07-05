@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserDataService } from '../../services/userdata.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/userdata.service';
+import { AuthService } from '../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { User } from '../../models/user.model';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+
 
 @Component({
   selector: 'app-profile-edit',
@@ -13,18 +17,21 @@ import { User } from '../../models/user.model';
   templateUrl: './profile-edit.component.html',
   styleUrls: ['./profile-edit.component.css']
 })
-export class ProfileEditComponent implements OnInit {
+export class ProfileEditComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   showToast = false;
   toastMessage = '';
   toastType = '';
-  toastClasses: string[] = ['bg-danger-subtle', 'bg-success-subtle'];
   toastClass = '';
   currentUser: User | null = null;
+  selectedFile: File | null = null;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private userDataService: UserDataService,
+    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.profileForm = this.fb.group({
@@ -32,7 +39,6 @@ export class ProfileEditComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
       birthdate: ['', Validators.required],
-      password: [''],
       title: [''],
       description: ['', Validators.maxLength(300)]
     });
@@ -42,27 +48,34 @@ export class ProfileEditComponent implements OnInit {
     this.loadUserData();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadUserData() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.userDataService.getUserDataByToken(token).subscribe(
-        user => {
-          if (user) {
-            this.currentUser = user;
-            this.profileForm.patchValue({
-              username: user.username,
-              email: user.email,
-              name: user.name,
-              birthdate: user.birthdate,
-              title: user['profile-info'].title,
-              description: user['profile-info'].description
-            });
-          }
-        },
-        error => {
-          this.showErrorToast('Error loading user data: ' + error);
+    if (this.authService.isAuthenticated()) {
+      this.userService.getProfile().pipe(
+        catchError(error => {
+          this.showErrorToast('Error loading user data: ' + error.message);
+          return of(null);
+        }),
+        takeUntil(this.destroy$)
+      ).subscribe(user => {
+        if (user) {
+          this.currentUser = user;
+          this.profileForm.patchValue({
+            username: user.username,
+            email: user.email,
+            name: user.name,
+            birthdate: user.profileInfo?.birthdate,
+            title: user.profileInfo?.title,
+            description: user.profileInfo?.description
+          });
         }
-      );
+      });
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 
@@ -70,35 +83,39 @@ export class ProfileEditComponent implements OnInit {
     if (this.profileForm.valid && this.currentUser) {
       const formValue = this.profileForm.value;
       const updatedUser: Partial<User> = {
-        ...this.currentUser,
         username: formValue.username,
         email: formValue.email,
         name: formValue.name,
-        birthdate: formValue.birthdate,
-        'profile-info': {
-          ...this.currentUser['profile-info'],
+        profileInfo: {
+          birthdate: formValue.birthdate,
           title: formValue.title,
           description: formValue.description
         }
       };
 
-      if (formValue.password) {
-        updatedUser.password = formValue.password;
+      let updateObservable = this.userService.updateProfile(updatedUser);
+
+      if (this.selectedFile) {
+        updateObservable = this.userService.uploadProfilePic(this.selectedFile).pipe(
+          switchMap(response => this.userService.updateProfilePicUrl(response.profilePicUrl)),
+          switchMap(() => this.userService.updateProfile(updatedUser))
+        );
       }
 
-      this.userDataService.updateUserData(updatedUser).subscribe(
-        (updatedUser) => {
-          if (updatedUser) {
-            this.showSuccessToast('Profile updated successfully');
-            setTimeout(() => this.router.navigate(['/feed']), 3000);
-          } else {
-            this.showErrorToast('Error updating profile');
-          }
-        },
-        error => {
+      updateObservable.pipe(
+        catchError(error => {
           this.showErrorToast('Error updating profile: ' + error.message);
+          return of(null);
+        }),
+        takeUntil(this.destroy$)
+      ).subscribe(updatedUser => {
+        if (updatedUser) {
+          this.showSuccessToast('Profile updated successfully');
+          setTimeout(() => this.router.navigate(['/feed']), 3000);
+        } else {
+          this.showErrorToast('Error updating profile');
         }
-      );
+      });
     } else {
       this.showErrorToast('Please fill all required fields correctly');
     }
@@ -108,7 +125,7 @@ export class ProfileEditComponent implements OnInit {
     this.toastMessage = message;
     this.showToast = true;
     this.toastType = 'Success';
-    this.toastClass = this.toastClasses[1];
+    this.toastClass = 'bg-success-subtle';
     setTimeout(() => this.showToast = false, 3000);
   }
 
@@ -116,7 +133,36 @@ export class ProfileEditComponent implements OnInit {
     this.toastMessage = message;
     this.showToast = true;
     this.toastType = 'Error';
-    this.toastClass = this.toastClasses[0];
+    this.toastClass = 'bg-danger-subtle';
     setTimeout(() => this.showToast = false, 3000);
   }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0] as File;
+  }
+
+  uploadProfilePic() {
+    if (this.selectedFile) {
+      this.userService.uploadProfilePic(this.selectedFile).pipe(
+        switchMap(response => this.userService.updateProfilePicUrl(response.profilePicUrl)),
+        catchError(error => {
+          this.showErrorToast('Error uploading profile picture: ' + error.message);
+          return of(null);
+        }),
+        takeUntil(this.destroy$)
+      ).subscribe(updatedUser => {
+        if (updatedUser) {
+          this.currentUser = updatedUser;
+          this.showSuccessToast('Profile picture updated successfully');
+        }
+      });
+    } else {
+      this.showErrorToast('Please select a file first');
+    }
+  }
+
+  goBack() {
+    this.router.navigate(['/feed']);
+  }
+  
 }

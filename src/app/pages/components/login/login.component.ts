@@ -2,10 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { TokenService } from '../../../services/token.service';
-import { User } from '../../../models/user.model';
-import { UserDataService } from '../../../services/userdata.service';
-import { catchError, switchMap, of } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -21,8 +20,7 @@ export class LoginComponent implements OnInit {
   toastType: 'success' | 'error' = 'error';
   showPassword = false;
 
-  private userDataService: UserDataService = inject(UserDataService);
-  private tokenService: TokenService = inject(TokenService);
+  private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
 
   constructor(private fb: FormBuilder) {
@@ -32,45 +30,30 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onSubmit() {
     if (this.loginForm.valid) {
       const { userOrEmail, password } = this.loginForm.value;
 
-      this.userDataService.getUserData().pipe(
-        switchMap(users => {
-          const user = users.find(u => 
-            (u.username === userOrEmail || u.email === userOrEmail) && u.password === password
-          );
-
-          if (user) {
-            const token = this.tokenService.generateRandomString(16);
-            const updatedUser: User = { ...user, token };
-            const updatedUsers = users.map(u => u.username === user.username ? updatedUser : u);
-
-            return this.userDataService.updateAllUserData(updatedUsers).pipe(
-              switchMap(() => {
-                localStorage.setItem('token', token);
-                this.showSuccessToast('Login successful');
-                return of(updatedUser);
-              })
-            );
-          } else {
-            throw new Error('Invalid username/email or password');
-          }
-        }),
+      this.authService.login({ userOrEmail, password }).pipe(
         catchError(error => {
-          this.showErrorToast(error.message);
+          if (error.status === 400) {
+            this.showErrorToast(error.error.error || 'Usuario no encontrado o contraseña incorrecta');
+          } else {
+            this.showErrorToast('Error en el servidor. Intente más tarde.');
+          }
           return of(null);
         })
-      ).subscribe(userData => {
-        if (userData) {
+      ).subscribe(response => {
+        if (response && response.token) {
+          this.authService.setToken(response.token);
+          this.showSuccessToast('Login exitoso');
           this.router.navigate(['/feed']);
         }
       });
     } else {
-      this.showErrorToast('Please fill all required fields correctly');
+      this.showErrorToast('Por favor, complete todos los campos correctamente');
     }
   }
 

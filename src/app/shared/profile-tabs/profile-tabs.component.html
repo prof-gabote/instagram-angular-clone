@@ -1,4 +1,4 @@
-<div class="container-fluid ">
+<div class="container-fluid">
   <ul class="nav nav-underline mb-3 justify-content-center tab-container">
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'posts'" (click)="setActiveTab('posts')">Posts</a>
@@ -10,23 +10,20 @@
       <a class="nav-link" [class.active]="activeTab === 'tagged'" (click)="setActiveTab('tagged')">Tagged</a>
     </li>
   </ul>
- 
-   <!-- Grid content -->
-   <div class="row">
-     <ng-container *ngIf="activeTab === 'posts'">
-       <div class="col-4 mb-1 px-1" *ngFor="let post of posts">
-         <img [src]="post.imageUrl" class="img-fluid" [alt]="'Post ' + post.id" aria-label="Post">
-       </div>
-     </ng-container>
-     <ng-container *ngIf="activeTab === 'reels'">
-       <div class="col-4 mb-1" *ngFor="let reel of reels">
-         <img [src]="reel.imageUrl" class="img-fluid" [alt]="'Reel ' + reel.id" aria-label="Reel">
-       </div>
-     </ng-container>
-     <ng-container *ngIf="activeTab === 'tagged'">
-       <div class="col-4 mb-1" *ngFor="let tag of tagged">
-         <img [src]="tag.imageUrl" class="img-fluid" [alt]="'Tagged ' + tag.id" aria-label="Tagged">
-       </div>
-     </ng-container>
-   </div>
- </div>
+
+  <!-- Grid content -->
+  <div class="row">
+    <ng-container *ngIf="activeTab === 'posts' && user">
+      <div class="col-4 mb-1 px-1" *ngFor="let postUrl of user.postPhotos; let i = index">
+        <img [src]="postUrl" class="img-fluid" [alt]="'Post ' + i" aria-label="Post">
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'reels'">
+      <!-- ... -->
+    </ng-container>
+    <ng-container *ngIf="activeTab === 'tagged'">
+      <!-- ... -->
+    </ng-container>
+  </div>
+</div>

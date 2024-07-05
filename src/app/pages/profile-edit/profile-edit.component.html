@@ -1,5 +1,10 @@
-<div class="container">
-  <h2 class="text-center mb-4">Edit Profile</h2>
+<div class="container my-3">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-secondary" (click)="goBack()">Back</button>
+    <h2 class="text-center mb-0">Edit Profile</h2>
+    <div style="width: 70px;"></div>
+  </div>
+
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
@@ -38,10 +43,6 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="password" class="form-label">New Password (leave blank to keep current password)</label>
-      <input type="password" class="form-control" id="password" formControlName="password">
-    </div>
-    <div class="mb-3">
       <label for="title" class="form-label">Title</label>
       <input type="text" class="form-control" id="title" formControlName="title">
     </div>
@@ -49,6 +50,10 @@
       <label for="description" class="form-label">Description</label>
       <textarea class="form-control" id="description" formControlName="description" rows="3" maxlength="300"></textarea>
       <div class="form-text">Maximum 300 characters</div>
+    </div>
+    <div class="mb-3">
+      <label for="profilePic" class="form-label">Profile Picture</label>
+      <input type="file" class="form-control" id="profilePic" (change)="onFileSelected($event)" accept="image/*">
     </div>
     <button type="submit" class="btn btn-primary w-100" [disabled]="profileForm.invalid">Update Profile</button>
   </form>

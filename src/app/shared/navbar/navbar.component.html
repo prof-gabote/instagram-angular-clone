@@ -6,7 +6,9 @@
          </a>
       </div>
       <div class="d-flex flex-row justify-content-between align-items-center">
-         <button class="add-post-btn" type="button" aria-label="Add post"><span class="bi bi-plus-square" style="font-size: 1.4rem;"></span>
+         <button class="add-post-btn" type="button" aria-label="Add post" data-bs-toggle="modal"
+            data-bs-target="#postUploadModal">
+            <span class="bi bi-plus-square" style="font-size: 1.4rem;"></span>
          </button>
          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -37,7 +39,8 @@
                      </div>
                      <div class="row align-items-start ps-3">
                         <ul class="justify-content-end ps-3">
-                           <li class="nav-item my-2"><a class="nav-link active" routerLink="/profile/edit">Edit profile</a></li>
+                           <li class="nav-item my-2"><a class="nav-link active" routerLink="/profile/edit">Edit
+                                 profile</a></li>
                            <li class="nav-item"><a class="nav-link active" href="#">Account settings</a></li>
                         </ul>
                         <hr>
@@ -70,7 +73,8 @@
                         <ul class="justify-content-end ps-3">
                            <li class="nav-item my-2"><a class="nav-link active" href="#">Preferences</a></li>
                            <li class="nav-item my-2"><a class="nav-link active" href="#">About the app</a></li>
-                           <li class="nav-item my-2"><button class="nav-link active"(click)="logout()">Sign out</button></li>
+                           <li class="nav-item my-2"><button class="nav-link active" (click)="logout()">Sign
+                                 out</button></li>
                         </ul>
                         <hr>
                      </div>
@@ -82,3 +86,12 @@
    </div>
 </nav>
 <div class="spacer"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="postUploadModal" tabindex="-1" aria-labelledby="postUploadModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <app-post-upload></app-post-upload>
+     </div>
+   </div>
+ </div>

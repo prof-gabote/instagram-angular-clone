@@ -1,0 +1,28 @@
+{
+   "username": "pepe.frog",
+   "password": "$2b$10$nokO2wf4JqyllUMvEjIPJuyht.ma0/M/qFqCCz4Ft7sBzyQX8Xxru",
+   "email": "pepe@frog.com",
+   "name": "Pepe the Frog",
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODgzOGI2ZWI2N2Y5ZDAzNzRmODljYSIsImlhdCI6MTcyMDIxMDkwNCwiZXhwIjoxNzIwMjIxNzA0fQ.MkFvcMUiIfF-nNV_kPExlkelSGjMFyBVzz7POnzTh_Y",
+   "profileInfo": {
+     "birthdate": {
+       "$date": "1990-01-01T00:00:00.000Z"
+     },
+     "title": "Internet Meme Legend",
+     "description": "🌿 Pepe the Frog 🐸 📸 Meme legend 🌐 Spreading smiles one meme at a time 💚 Living the frog life 🎨 Artwork & laughs #PepeTheFrog #MemeLife #FrogLife #ArtAndLaughs #Progamer"
+   },
+   "profilePicUrl": "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fprofile%2F1720213031599-b967f2961b7a61c9406197e9be63ebd6.jpg?alt=media&token=1e3631f0-7542-4ac6-8145-333e7835a39f",
+   "followers": "0",
+   "following": "0",
+   "postPhotos": [
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205696754-profile_feed.png?alt=media&token=cbdb2bd3-cce5-43fa-8d09-af07f67ca4bf",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205712610-story_2.png?alt=media&token=da02daac-c81f-499d-a1ce-b2bc0d4fd04d",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205722529-story_3.png?alt=media&token=ac8bcc86-8d74-4d51-ab82-36a164aa16e0",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205731578-story_4.png?alt=media&token=2dc2bf9c-f68c-4eae-9c83-d21fb4d39ea6",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205750855-story_5.png?alt=media&token=0447fc96-a318-492e-8b75-4c704f4ea504",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720205767175-story_6.png?alt=media&token=151349d5-5a61-4ac9-a18f-cace2d72e964",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720210911557-d8848a35e15cd4bbc0c97511fdd151ce.jpg?alt=media&token=410e544b-5ee0-4251-b558-f498c15a73bb",
+     "https://firebasestorage.googleapis.com/v0/b/instagram-clone-c2691.appspot.com/o/users%2Fpepe.frog%2Fposts%2F1720213840194-62cnMgoL_400x400.jpg?alt=media&token=06d2dd49-930a-4ddf-b365-ced7ced823bf"
+   ],
+   "__v": 8
+ }

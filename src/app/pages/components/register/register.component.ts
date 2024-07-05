@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UserDataService } from '../../../services/userdata.service';
+import { UserService } from '../../../services/userdata.service';
+import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../models/user.model';
-import { of, switchMap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -22,18 +24,18 @@ export class RegisterComponent implements OnInit {
   showToast = false;
   toastMessage = '';
   toastType = '';
-  toastClasses: string[] = ['bg-danger-subtle', 'bg-success-subtle'];
   toastClass = '';
 
   constructor(
     private fb: FormBuilder,
-    private userDataService: UserDataService,
+    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
       repeatPassword: ['', Validators.required],
       username: ['', Validators.required],
       birthdate: ['', [Validators.required, this.ageValidator]]
@@ -69,61 +71,49 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
     if (this.registerForm.valid) {
       const { email, name, password, username, birthdate } = this.registerForm.value;
-      
-      this.userDataService.getUserData().pipe(
-        switchMap(users => {
-          const existingUser = users.find(user => user.email === email || user.username === username);
-          if (existingUser) {
-            this.showErrorToast('User already exists. Please login.');
-            return of(null);
-          }
-  
-          const newUser: User = {
-            id: (users.length + 1).toString(),
-            email,
-            name,
-            password,
-            username,
-            birthdate,
-            token: this.generateToken(),
-            'profile-info': {
-              title: `${name}'s Profile`,
-              description: `Welcome to ${name}'s profile!`,
-              'profile-pic-url': '/assets/default-profile-pic.png',
-              posts: '0',
-              followers: '0',
-              following: '0'
-            }
-          };
-  
-          users.push(newUser);
-          return this.userDataService.updateAllUserData(users);
+
+      const newUser: User = {
+        username,
+        email,
+        name,
+        password,
+        profileInfo: {
+          birthdate,
+          title: `${name}'s Profile`,
+          description: `Welcome to ${name}'s profile!`,
+        },
+        profilePicUrl: '/assets/default-profile-pic.png',
+        followers: '0',
+        following: '0',
+        postPhotos: [""],
+        token: ""
+      };
+
+      this.userService.register(newUser).pipe(
+        catchError(error => {
+          this.showErrorToast('Error registering user: ' + error.message);
+          return of(null);
         })
       ).subscribe(
-        result => {
-          if (result) {
+        response => {
+          if (response && response.token) {
             this.showSuccessToast('User registered successfully.');
+            this.authService.setToken(response.token);
             this.registerForm.reset();
             this.submitted = false;
-            setTimeout(() => this.router.navigate(['/auth/login']), 3000);
+            setTimeout(() => this.router.navigate(['/feed']), 3000);
           }
-        },
-        error => {
-          this.showErrorToast('Error registering user: ' + error.message);
         }
       );
     }
   }
 
-  generateToken(): string {
-    return Math.random().toString(36).substr(2, 16);
-  }
 
   showSuccessToast(message: string) {
     this.toastMessage = message;
     this.showToast = true;
     this.toastType = 'Success';
-    this.toastClass = this.toastClasses[1];
+    this.toastClass = 'bg-success-subtle';
     setTimeout(() => this.showToast = false, 3000);
   }
 
@@ -131,7 +121,7 @@ export class RegisterComponent implements OnInit {
     this.toastMessage = message;
     this.showToast = true;
     this.toastType = 'Error';
-    this.toastClass = this.toastClasses[0];
+    this.toastClass = 'bg-danger-subtle';
     setTimeout(() => this.showToast = false, 3000);
   }
 }

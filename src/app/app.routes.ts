@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/components/register/register.componen
 import { AuthComponent } from './pages/auth/auth.component';
 import { authGuard } from './guards/auth.guard';
 import { ProfileEditComponent } from './pages/profile-edit/profile-edit.component';
+import { PostUploadComponent } from './shared/post-upload/post-upload.component';
 
 export const routes: Routes = [
    {
@@ -18,5 +19,7 @@ export const routes: Routes = [
    },
    { path: 'feed', component: FeedComponent, canActivate: [authGuard] },
    { path: 'profile/edit', component: ProfileEditComponent, canActivate: [authGuard] },
+   { path: 'upload-photo', component: PostUploadComponent },
    { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+   
 ];

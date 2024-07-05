@@ -1,17 +1,16 @@
 export interface User {
-   id: string;
-   username: string;
-   password: string;
-   email: string;
-   name: string;
-   birthdate: string;
-   token: string;
-   'profile-info': {
-      title: string;
-      description: string;
-      'profile-pic-url': string;
-      posts: string;
-      followers: string;
-      following: string;
-   };
-}
+   username: { type: String, unique: true, required: true },
+   password: { type: String, required: true },
+   email: { type: String, unique: true, required: true },
+   name: String,
+   token: String,
+   profileInfo: {
+      birthdate: Date,
+      title: String,
+      description: String,
+   },
+   profilePicUrl: String,
+   followers: String,
+   following: String,
+   postPhotos: [String],
+};
