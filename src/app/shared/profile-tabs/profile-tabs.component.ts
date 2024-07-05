@@ -3,7 +3,6 @@ import { NgFor, NgIf } from '@angular/common';
 import { UserService } from '../../services/userdata.service';
 import { User } from '../../models/user.model';
 
-// Importamos Modal como tipo
 import type { Modal } from 'bootstrap';
 
 @Component({

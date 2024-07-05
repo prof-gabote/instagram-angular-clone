@@ -7,7 +7,7 @@
      <label for="postPhoto" class="form-label">Select Photo</label>
      <input type="file" class="form-control" id="postPhoto" (change)="onFileSelected($event)" accept="image/*" required>
    </div>
- 
+
    <div *ngIf="previewUrl" class="mb-3">
      <img [src]="previewUrl" alt="Preview" class="img-fluid">
    </div>
