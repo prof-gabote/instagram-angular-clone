@@ -114,7 +114,7 @@ app.post("/register", async (req, res) => {
       profilePicUrl: "",
       followers: "0",
       following: "0",
-      postPhotos: [""],
+      postPhotos: [],
     });
 
     await newUser.save();
