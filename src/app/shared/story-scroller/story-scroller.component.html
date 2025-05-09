@@ -1,12 +1,12 @@
 <div class="story-scroller">
-   <div class="row flex-nowrap overflow-auto story-container">
-      <ng-container *ngIf="user">
-         <div class="col-3 col-md-2" *ngFor="let postUrl of user.postPhotos; let i = index">
-            <div class="story-item">
-               <img [src]="postUrl" [alt]="'Post ' + (i + 1)" aria-label="Post">
-               <span>Post {{ i + 1 }}</span>
-            </div>
-         </div>
-      </ng-container>
-   </div>
+  <div class="row flex-nowrap overflow-auto story-container">
+    <ng-container *ngIf="posts && posts.length > 0">
+      <div class="col-3 col-md-2" *ngFor="let post of posts; let i = index">
+        <div class="story-item">
+          <img [src]="post.photoUrl" [alt]="'Post ' + (i + 1)" aria-label="Post">
+          <span>Post {{ i + 1 }}</span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </div>

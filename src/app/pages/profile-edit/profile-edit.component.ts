@@ -68,9 +68,9 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
             username: user.username,
             email: user.email,
             name: user.name,
-            birthdate: user.profileInfo?.birthdate,
-            title: user.profileInfo?.title,
-            description: user.profileInfo?.description
+            birthdate: user.birthdate,
+            title: user.title,
+            description: user.description
           });
         }
       });
@@ -86,11 +86,9 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         username: formValue.username,
         email: formValue.email,
         name: formValue.name,
-        profileInfo: {
-          birthdate: formValue.birthdate,
-          title: formValue.title,
-          description: formValue.description
-        }
+        birthdate: formValue.birthdate,
+        title: formValue.title,
+        description: formValue.description
       };
 
       let updateObservable = this.userService.updateProfile(updatedUser);
@@ -164,5 +162,5 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
   goBack() {
     this.router.navigate(['/feed']);
   }
-  
+
 }

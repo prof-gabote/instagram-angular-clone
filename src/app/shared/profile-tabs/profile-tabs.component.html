@@ -13,18 +13,18 @@
 
   <!-- Grid content -->
   <div class="row">
-    <ng-container *ngIf="activeTab === 'posts' && user">
-      <div class="col-4 mb-1 px-1" *ngFor="let postUrl of user.postPhotos; let i = index">
+    <ng-container *ngIf="activeTab === 'posts' && posts.length > 0">
+      <div class="col-4 mb-1 px-1" *ngFor="let post of posts">
         <div class="position-relative">
-          <img [src]="postUrl" class="img-fluid" [alt]="'Post ' + i" aria-label="Post">
-          <button 
-            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" 
-            (click)="openDeleteModal(postUrl)"
-            title="Eliminar post"
-            aria-label="Eliminar post"
-          >
-            <i class="bi bi-trash" aria-hidden="true"></i>
-            <span class="visually-hidden">Eliminar</span>
+          <img [src]="post.photoUrl" class="img-fluid" alt="Post">
+          <div class="position-absolute bottom-0 start-0 bg-dark text-white px-2 py-1 small">
+            ❤️ {{ post.likes || 0 }}
+          </div>
+          <div class="position-absolute bottom-0 end-0 bg-dark text-white px-2 py-1 small text-truncate">
+            {{ post.description }}
+          </div>
+          <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" (click)="openDeleteModal(post.id!)">
+            <i class="bi bi-trash"></i>
           </button>
         </div>
       </div>
@@ -40,7 +40,8 @@
 </div>
 
 <!-- Modal de confirmación -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

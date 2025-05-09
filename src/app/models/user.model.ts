@@ -1,16 +1,14 @@
+// models/user.model.ts
 export interface User {
-   username: { type: String, unique: true, required: true },
-   password: { type: String, required: true },
-   email: { type: String, unique: true, required: true },
-   name: String,
-   token: String,
-   profileInfo: {
-      birthdate: Date,
-      title: String,
-      description: String,
-   },
-   profilePicUrl: String,
-   followers: String,
-   following: String,
-   postPhotos: string[],
-};
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  token?: string;
+  birthdate?: Date;
+  title?: string;
+  description?: string;
+  profilePicUrl?: string;
+  followers?: string;
+  following?: string;
+}

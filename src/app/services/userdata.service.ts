@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
+import { environment } from '../../env/enviroment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
@@ -33,7 +34,11 @@ export class UserService {
   }
 
   changePassword(oldPassword: string, newPassword: string): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(`${this.apiUrl}/change-password`, { oldPassword, newPassword }, { headers: this.getHeaders() });
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}/change-password`,
+      { oldPassword, newPassword },
+      { headers: this.getHeaders() }
+    );
   }
 
   uploadProfilePic(file: File): Observable<{ message: string, profilePicUrl: string }> {
@@ -46,20 +51,6 @@ export class UserService {
     );
   }
 
-  uploadPostPhoto(file: File): Observable<{ message: string, postPhotoUrl: string }> {
-    const formData = new FormData();
-    formData.append('postPhoto', file);
-    return this.http.post<{ message: string, postPhotoUrl: string }>(
-      `${this.apiUrl}/upload-post-photo`,
-      formData,
-      { headers: this.getHeaders() }
-    );
-  }
-
-  deleteProfile(): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/profile`, { headers: this.getHeaders() });
-  }
-
   updateProfilePicUrl(profilePicUrl: string): Observable<User> {
     return this.http.put<User>(
       `${this.apiUrl}/profile`,
@@ -68,13 +59,7 @@ export class UserService {
     );
   }
 
-  deletePostPhoto(photoUrl: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(
-      `${this.apiUrl}/delete-post-photo`,
-      { 
-        headers: this.getHeaders(),
-        body: { photoUrl }
-      }
-    );
+  deleteProfile(): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/profile`, { headers: this.getHeaders() });
   }
 }

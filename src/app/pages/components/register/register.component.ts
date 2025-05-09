@@ -77,16 +77,12 @@ export class RegisterComponent implements OnInit {
         email,
         name,
         password,
-        profileInfo: {
-          birthdate,
-          title: `${name}'s Profile`,
-          description: `Welcome to ${name}'s profile!`,
-        },
+        birthdate,
+        title: `${name}'s Profile`,
+        description: `Welcome to ${name}'s profile!`,
         profilePicUrl: '/assets/default-profile-pic.png',
         followers: '0',
-        following: '0',
-        postPhotos: [""],
-        token: ""
+        following: '0'
       };
 
       this.userService.register(newUser).pipe(

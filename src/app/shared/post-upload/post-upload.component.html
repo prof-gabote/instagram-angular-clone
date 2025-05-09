@@ -1,31 +1,44 @@
 <div class="modal-header">
-   <h5 class="modal-title" id="postUploadModalLabel">Upload Photo</h5>
-   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
- </div>
- <div class="modal-body">
-   <div class="mb-3">
-     <label for="postPhoto" class="form-label">Select Photo</label>
-     <input type="file" class="form-control" id="postPhoto" (change)="onFileSelected($event)" accept="image/*" required>
-   </div>
+  <h5 class="modal-title" id="postUploadModalLabel">Upload Photo</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <div class="mb-3">
+    <label for="postPhoto" class="form-label">Select Photo</label>
+    <input type="file" class="form-control" id="postPhoto" (change)="onFileSelected($event)" accept="image/*" required>
+  </div>
 
-   <div *ngIf="previewUrl" class="mb-3">
-     <img [src]="previewUrl" alt="Preview" class="img-fluid">
-   </div>
- </div>
- <div class="modal-footer">
-   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-   <button type="button" class="btn btn-primary" (click)="uploadPost()" [disabled]="!selectedFile">Upload Photo</button>
- </div>
- 
- <!-- Toast -->
- <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100">
-   <div id="liveToast" class="toast" [ngClass]="{'show': showToast}" role="alert" aria-live="assertive" aria-atomic="true">
-     <div class="toast-header {{toastClass}}">
-       <strong class="me-auto">{{toastType}}</strong>
-       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" (click)="showToast = false"></button>
-     </div>
-     <div class="toast-body">
-       {{ toastMessage }}
-     </div>
-   </div>
- </div>
+  <div class="mb-3">
+    <label for="postDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="postDescription" [(ngModel)]="description" placeholder="Write a short caption..."
+      rows="3" required></textarea>
+  </div>
+
+  <div *ngIf="previewUrl" class="mb-3">
+    <label class="form-label">Preview</label>
+    <img [src]="previewUrl" alt="Preview" class="img-fluid">
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="uploadPost()"
+    [disabled]="!selectedFile || !description.trim()">
+    Upload Photo
+  </button>
+</div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100">
+  <div id="liveToast" class="toast" [ngClass]="{'show': showToast}" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="toast-header {{toastClass}}">
+      <strong class="me-auto">{{toastType}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"
+        (click)="showToast = false"></button>
+    </div>
+    <div class="toast-body">
+      {{ toastMessage }}
+    </div>
+  </div>
+</div>

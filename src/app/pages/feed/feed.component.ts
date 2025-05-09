@@ -1,40 +1,44 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../shared/navbar/navbar.component';
-import { StoryScrollerComponent } from '../../shared/story-scroller/story-scroller.component';
-import { ProfileTabsComponent } from '../../shared/profile-tabs/profile-tabs.component';
-import { UserService } from '../../services/userdata.service';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user.model';
-import { Router, RouterModule } from '@angular/router';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, of } from "rxjs";
+import { Post } from "../../models/post.model";
+import { User } from "../../models/user.model";
+import { Component, OnInit } from "@angular/core";
+import { PostService } from "../../services/post.service";
+import { AuthService } from "../../services/auth.service";
+import { Router, RouterModule } from "@angular/router";
+import { UserService } from "../../services/userdata.service";
+import { CommonModule } from "@angular/common";
+import { NavbarComponent } from "../../shared/navbar/navbar.component";
+import { StoryScrollerComponent } from "../../shared/story-scroller/story-scroller.component";
+import { ProfileTabsComponent } from "../../shared/profile-tabs/profile-tabs.component";
 
 @Component({
   selector: 'app-feed',
   standalone: true,
   imports: [
     CommonModule,
-    NavbarComponent, 
+    RouterModule,
+    NavbarComponent,         
     StoryScrollerComponent, 
-    ProfileTabsComponent, 
-    RouterModule
+    ProfileTabsComponent     
   ],
   templateUrl: './feed.component.html',
-  styleUrls: ['./feed.component.css']
+  styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit {
   userData: User | null = null;
+  posts: Post[] = []; // <-- sin @Input
 
   constructor(
-      @Inject(UserService) private userService: UserService,
-      private authService: AuthService,
-      private router: Router
-    ) { }
+    private userService: UserService,
+    private postService: PostService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
       this.loadUserProfile();
+      this.loadUserPosts();
     } else {
       this.router.navigate(['/auth/login']);
     }
@@ -48,21 +52,30 @@ export class FeedComponent implements OnInit {
         return of(null);
       })
     ).subscribe((user: User | null) => {
-      if (user) {
-        this.userData = user;
-      }
+      this.userData = user;
+    });
+  }
+
+  loadUserPosts() {
+    this.postService.getUserPosts().pipe(
+      catchError(error => {
+        console.error('Error loading posts:', error);
+        return of([]);
+      })
+    ).subscribe((posts: Post[]) => {
+      this.posts = posts;
     });
   }
 
   getPostCount(): number {
-    return this.userData?.postPhotos?.length || 0;
+    return this.posts.length;
   }
 
   getFollowersCount(): number {
-    return this.userData?.followers ? parseInt(String(this.userData.followers)) : 0;
+    return this.userData?.followers ? parseInt(this.userData.followers) : 0;
   }
 
   getFollowingCount(): number {
-    return this.userData?.following ? parseInt(String(this.userData.following)) : 0;
+    return this.userData?.following ? parseInt(this.userData.following) : 0;
   }
 }

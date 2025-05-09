@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { UserService } from '../../services/userdata.service';
+import { PostService } from '../../services/post.service';
 import { User } from '../../models/user.model';
+import { Post } from '../../models/post.model';
 
 import type { Modal } from 'bootstrap';
 
@@ -17,11 +19,16 @@ export class ProfileTabsComponent implements OnInit {
   user: User | null = null;
   private deleteModal: Modal | null = null;
   private postToDelete: string | null = null;
+  posts: Post[] = [];
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private postService: PostService
+  ) { }
 
   ngOnInit() {
     this.loadUserProfile();
+    this.loadUserPosts();
     if (this.isBrowser()) {
       this.initializeModal();
     }
@@ -51,8 +58,8 @@ export class ProfileTabsComponent implements OnInit {
     }
   }
 
-  openDeleteModal(photoUrl: string) {
-    this.postToDelete = photoUrl;
+  openDeleteModal(postId: string) {
+    this.postToDelete = postId;
     if (this.isBrowser()) {
       this.deleteModal?.show();
     }
@@ -60,27 +67,24 @@ export class ProfileTabsComponent implements OnInit {
 
   confirmDelete() {
     if (this.postToDelete) {
-      this.userService.deletePostPhoto(this.postToDelete).subscribe(
-        (response) => {
-          console.log(response.message);
-          if (this.user) {
-            this.user.postPhotos = this.user.postPhotos.filter(url => url !== this.postToDelete);
-          }
-          if (this.isBrowser()) {
-            this.deleteModal?.hide();
-          }
-        },
-        (error) => {
-          console.error('Error deleting post:', error);
-          if (this.isBrowser()) {
-            this.deleteModal?.hide();
-          }
+      this.postService.deletePostById(this.postToDelete).subscribe(
+        () => {
+          this.posts = this.posts.filter(p => p.id !== this.postToDelete);
+          this.deleteModal?.hide();
         }
       );
     }
   }
 
+
   private isBrowser(): boolean {
     return typeof window !== 'undefined';
   }
+
+  loadUserPosts() {
+    this.postService.getUserPosts().subscribe(
+      posts => this.posts = posts
+    );
+  }
+
 }

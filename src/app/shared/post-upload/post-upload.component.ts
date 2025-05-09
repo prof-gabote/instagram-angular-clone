@@ -1,27 +1,29 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/userdata.service';
+import { PostService } from '../../services/post.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-post-upload',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './post-upload.component.html',
   styleUrls: ['./post-upload.component.css']
 })
 export class PostUploadComponent {
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
+  description: string = '';
   showToast = false;
   toastMessage = '';
   toastType = '';
   toastClass = '';
 
-  constructor(private userService: UserService) {}
+  constructor(private postService: PostService) {}
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0] as File;
@@ -39,8 +41,8 @@ export class PostUploadComponent {
   }
 
   uploadPost() {
-    if (this.selectedFile) {
-      this.userService.uploadPostPhoto(this.selectedFile).pipe(
+    if (this.selectedFile && this.description.trim()) {
+      this.postService.uploadNewPost(this.selectedFile, this.description).pipe(
         catchError(error => {
           this.showErrorToast('Error uploading post: ' + error.message);
           return of(null);
@@ -48,13 +50,11 @@ export class PostUploadComponent {
       ).subscribe(response => {
         if (response) {
           this.showSuccessToast('Photo uploaded successfully');
-          setTimeout(() => {
-            this.closeModal();
-          }, 3000);
+          setTimeout(() => this.closeModal(), 3000);
         }
       });
     } else {
-      this.showErrorToast('Please select an image');
+      this.showErrorToast('Please select an image and write a description');
     }
   }
 

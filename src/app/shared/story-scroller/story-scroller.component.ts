@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { UserService } from '../../services/userdata.service';
 import { User } from '../../models/user.model';
+import { Post } from '../../models/post.model';
+import { PostService } from '../../services/post.service';
+import { UserService } from '../../services/userdata.service';
 
 @Component({
   selector: 'app-story-scroller',
@@ -11,13 +13,18 @@ import { User } from '../../models/user.model';
   styleUrl: './story-scroller.component.css'
 })
 export class StoryScrollerComponent implements OnInit {
-  
+  posts: Post[] = [];
   user: User | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private postService: PostService
+  ) { }
 
-  ngOnInit() {
-    this.loadUserProfile();
+  ngOnInit(): void {
+    this.postService.getUserPosts().subscribe(
+      (posts) => this.posts = posts
+    );
   }
 
   loadUserProfile() {
